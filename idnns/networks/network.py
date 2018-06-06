@@ -36,7 +36,7 @@ def train_and_calc_inf_network(i, j, k, layerSize, num_of_ephocs, learning_rate_
 	                        cov_net)
 	network['information'] = []
 	if calc_information:
-		print ('Calculating the infomration')
+		print ('Calculating the information')
 		infomration = np.array([inn.get_information(network['ws'], data_sets_org.data, data_sets_org.labels,
 		                                            num_of_bins, interval_information_display, network['model'],
 		                                            layerSize)])

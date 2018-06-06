@@ -1,4 +1,4 @@
-import _pickle as cPickle
+import pickle as cPickle
 import multiprocessing
 import os
 import sys
