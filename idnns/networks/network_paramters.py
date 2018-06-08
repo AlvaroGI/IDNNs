@@ -31,7 +31,7 @@ def get_default_parser(num_of_samples=None):
 	                    type=int, help='The number of times to run the network')
 
 	parser.add_argument('-num_epochs',
-	                    '-e', dest="num_ephocs", default=8000,
+	                    '-e', dest="num_ephocs", default=100, #8000,
 	                    type=int, help='max number of epochs')
 
 	parser.add_argument('-net',
@@ -101,9 +101,29 @@ def get_default_parser(num_of_samples=None):
 	parser.add_argument('-rl',
 	                    '-rand_labels', dest="random_labels", type=str2bool, nargs='?', const=False, default=False,
 	                    help='True if we want to set random labels')
+
 	parser.add_argument('-data_dir',
 	                    '-dd', dest="data_dir", default='data/',
 	                    help='The directory for finding the data')
+
+	# Supervision parameters
+	parser.add_argument('-lambdaF',
+	                    '-lambdaF', dest="lambdaF", default=0.0,
+	                    type=float,
+	                    help='Weight of the forward loss')
+	parser.add_argument('-lambdaR',
+	                    '-lambdaR', dest="lambdaR", default=0.0,
+	                    type=float,
+	                    help='Weight of the reverse loss')
+	parser.add_argument('-nF',
+	                    '-nF', dest="nF", default=5,
+	                    type=float,
+	                    help='Hidden layer that serves as input for forward supervision')
+	parser.add_argument('-nR',
+	                    '-nR', dest="nR", default=5,
+	                    type=float,
+	                    help='Hidden layer that serves as input for reconstruction')
+
 	args = parser.parse_args()
 	args.inds = [map(int, inner.split(',')) for inner in re.findall("\[(.*?)\]", args.inds)]
 	if num_of_samples != None:

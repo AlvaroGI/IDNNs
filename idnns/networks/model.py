@@ -4,7 +4,13 @@ import numpy as np
 from idnns.networks.utils import _convert_string_dtype
 from idnns.networks.models import multi_layer_perceptron
 from idnns.networks.models import deepnn
+from idnns.networks.models import ForNet
+from idnns.networks.models import RecNet
 from idnns.networks.ops import *
+from idnns.networks import network_paramters as netp
+args = netp.get_default_parser(None)
+lambdaF = args.lambdaF
+lambdaR = args.lambdaR
 
 
 def lazy_property(function):
@@ -44,6 +50,7 @@ class Model:
 		else:
 			self.activation_function = tf.nn.tanh
 		self.prediction
+		self.predictionF
 		self.optimize
 		self.accuracy
 
@@ -107,6 +114,16 @@ class Model:
 		return logits
 
 	@lazy_property
+	def predictionF(self):
+		logits = ForNet(self.hidden_layers,1)
+		return logits
+
+	@lazy_property
+	def xR(self):
+		recx = RecNet(self.hidden_layers,1,12)
+		return recx
+
+	@lazy_property
 	def drouput(self):
 		return self._drouput
 
@@ -135,6 +152,19 @@ class Model:
 	def cross_entropy(self):
 		cross_entropy = tf.reduce_mean(
 			-tf.reduce_sum(self.labels * tf.log(tf.clip_by_value(self.prediction, 1e-50, 1.0)), reduction_indices=[1]))
+##########################################
+		print('XXXXXXXX')
+		print(self.prediction)
+		print(self.predictionF)
+		print('XXXXXXXX')
+#		lossF = tf.reduce_mean(
+#			-tf.reduce_sum(self.labels * tf.log(tf.clip_by_value(self.predictionF, 1e-50, 1.0)), reduction_indices=[1]))
+		lossF = tf.reduce_mean(
+			tf.nn.softmax_cross_entropy_with_logits(labels=self.labels, logits=self.predictionF))
+		lossR = tf.reduce_mean(
+			tf.nn.softmax_cross_entropy_with_logits(labels=self.x, logits=self.xR))
+		cross_entropy = cross_entropy + lambdaF*lossF + lambdaR*lossR
+##########################################
 		tf.summary.scalar('cross_entropy', cross_entropy)
 		return cross_entropy
 

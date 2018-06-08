@@ -1,6 +1,9 @@
 import tensorflow as tf
 from idnns.networks.ops import *
-
+from idnns.networks import network_paramters as netp
+args = netp.get_default_parser(None)
+nF = args.nF
+nR = args.nR
 
 def multi_layer_perceptron(x, n_input, n_classes, n_hidden_1, n_hidden_2):
 	hidden = []
@@ -123,3 +126,78 @@ def deepnn(x):
 	input.append(input_y_conv)
 	hidden.append(y_conv)
 	return y_conv, keep_prob, hidden, input
+
+def ForNet(hidden_layers,fc_layers):
+    '''
+    Additional path for forward supervision.
+    :param hidden_layers: input layer (4D tensor).
+    :param fc_layers: number of fc layers.
+    :return: alternative prediction.
+    '''
+    args = netp.get_default_parser(None)
+    nF = args.nF
+
+    layer = hidden_layers[nF]
+
+    output_size = 2
+    size_map = layer.get_shape().as_list()[-1]
+
+    if fc_layers == 1:
+        # Fully connected final layer
+        W_fcout = weight_variable([size_map, output_size])
+        b_fcout = bias_variable([output_size])
+
+        y_2 = tf.nn.sigmoid(tf.matmul(layer,W_fcout) + b_fcout)
+
+    else:
+        print('ERROR: wrong (not implemented) number of fc layers in ForNet')
+
+    return y_2
+
+def RecNet(hidden_layers,fc_layers,data_size):
+    '''
+    The main function that defines the RecNet.
+    :param hidden_layers: input layer (4D tensor).
+    :param data_size: size of the original data.
+    :param fc_layers: number of fc layers.
+    :return: reconstructed image.
+    '''
+    args = netp.get_default_parser(None)
+    nF = args.nF
+
+    layer = hidden_layers[nF]
+
+    size_map = layer.get_shape().as_list()[-1]
+
+    if fc_layers == 1:
+        # Fully connected final layer
+        W_fcout = weight_variable([size_map, data_size])
+        b_fcout = bias_variable([data_size])
+
+        Recx = tf.nn.sigmoid(tf.matmul(layer, W_fcout) + b_fcout)
+
+    elif fc_layers == 3:
+        # First layer: 1 fc layers of 512x3 units
+        fcB_size = (data_size+size_map)//2
+        W_fcB = weight_variable([int(size_map), fcB_size])
+        b_fcB = bias_variable([fcB_size])
+
+        h_fcB = tf.nn.relu(tf.matmul(layer, W_fcB) + b_fcB)
+
+        # Second layer: fc layer of 1024x3 units
+        fcX_size = (data_size+size_map)*3//4
+        W_fcX = weight_variable([fcB_size,fcX_size])
+        b_fcX = bias_variable([fcX_size])
+
+        h_fcX = tf.nn.relu(tf.matmul(h_fcB, W_fcX) + b_fcX)
+
+        # Fully connected final layer
+        W_fcout = weight_variable([fcX_size, data_size])
+        b_fcout = bias_variable([data_size])
+
+        Recx = tf.nn.sigmoid(tf.matmul(h_fcX, W_fcout) + b_fcout)
+
+    else:
+        print('ERROR: wrong number of fc layers in RecNet')
+
+    return Recx

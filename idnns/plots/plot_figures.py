@@ -280,7 +280,7 @@ def plot_snapshots(name_s, save_name, i, time_stemps=[13, 180, 963],font_size = 
 
 
 def load_figures(mode, str_names=None):
-    """Creaet new figure based on the mode of it
+    """Create new figure based on the mode of it
     This function is really messy and need to rewrite """
     if mode == 0:
         font_size = 34
