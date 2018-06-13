@@ -139,7 +139,7 @@ def train_network(layerSize, num_of_ephocs, learning_rate_local, batch_size, ind
 			for i in range(0, len(batch_points) - 1):
 				batch_xs = data_sets.train.data[batch_points[i]:batch_points[i + 1]]
 				batch_ys = data_sets.train.labels[batch_points[i]:batch_points[i + 1]]
-				feed_dict = {model.x: batch_xs, model.labels: batch_ys}
+				feed_dict = {model.x: batch_xs, model.labels: batch_ys, model.epochFR: j}
 				_, tr_err = sess.run([optimizer, model.accuracy], feed_dict=feed_dict)
 				acc_train_array.append(tr_err)
 				if j in indexes:

@@ -17,6 +17,8 @@ import os.path
 import idnns.plots.utils as utils
 import Tkinter as tk
 from numpy import linalg as LA
+from idnns.networks import network_paramters as netp
+
 
 import tkFileDialog as filedialog
 
@@ -382,6 +384,37 @@ def load_figures(mode, str_names=None):
         yticks = [0,  1,  2, 3, 3]
         xticks = [2, 5, 8, 11,14, 17]
     return font_size, axis_font, bar_font, colorbar_axis, sizes, yticks, xticks,title_strs, f, axes
+
+######################################################################
+######################################################################
+def write_maxMI_from_fig(str_names, mode, save_name):
+    """Plot the data in the given names with the given mode"""
+    args = netp.get_default_parser(None)
+    [font_size, axis_font, bar_font, colorbar_axis, sizes, yticks, xticks,title_strs, f, axes] = load_figures(mode, str_names)
+    #Go over all the files
+    file_name = "Max_MI_%s.txt" % (args.version)
+    file = open(file_name,"a")
+    file.write("trstepF lambdaF nF trstepR lambdaR nR maxI(T;Y) correspondingI(X;T) [for each layer]")
+    file.write("\n%d %s %d %d %s %d" %(args.trstepF,args.lambdaF,args.nF,args.trstepR,args.lambdaR,args.nR))
+    for i in range(len(str_names)):
+        for j in range(len(str_names[i])):
+            name_s = str_names[i][j]
+            #Load data for the given file
+            data_array = utils.get_data(name_s)
+            data  = np.squeeze(np.array(data_array['information']))
+            I_XT_array = np.array(extract_array(data, 'local_IXT'))
+            I_TY_array = np.array(extract_array(data, 'local_ITY'))
+            maxI_TY = np.amax(I_TY_array,0)
+            correspI_XT = np.argmax(I_TY_array,0)
+            for ii in range(0,I_TY_array.shape[1]):
+                file = open(file_name,"a")
+                file.write("%.5f %.5f " % (maxI_TY[ii],I_XT_array[correspI_XT[ii],ii]) )
+            print("Maximum I(T;Y) saved in %s" % file_name)
+    file = open(file_name,"a")
+    file.close
+######################################################################
+######################################################################
+
 
 
 def plot_figures(str_names, mode, save_name):

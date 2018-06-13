@@ -9,6 +9,10 @@ from idnns.networks.models import RecNet
 from idnns.networks.ops import *
 from idnns.networks import network_paramters as netp
 args = netp.get_default_parser(None)
+#trstepF = args.trstepF
+#trstepR = args.trstepR
+trstepF = 100
+trstepR = 100
 lambdaF = args.lambdaF
 lambdaR = args.lambdaR
 
@@ -141,6 +145,14 @@ class Model:
 	def labels(self):
 		return tf.placeholder(tf.float32, shape=[None, self.num_of_classes], name='y_true')
 
+##########################################
+##########################################
+	@lazy_property
+	def epochFR(self):
+		return tf.placeholder(tf.int32, shape=[], name='epochFR')
+##########################################
+##########################################
+
 	@lazy_property
 	def accuracy(self):
 		correct_prediction = tf.equal(tf.argmax(self.prediction, 1), tf.argmax(self.labels, 1))
@@ -153,17 +165,23 @@ class Model:
 		cross_entropy = tf.reduce_mean(
 			-tf.reduce_sum(self.labels * tf.log(tf.clip_by_value(self.prediction, 1e-50, 1.0)), reduction_indices=[1]))
 ##########################################
-		print('XXXXXXXX')
-		print(self.prediction)
-		print(self.predictionF)
-		print('XXXXXXXX')
+##########################################
+#		print('XXXXXXXX')
+#		print(self.prediction)
+#		print(self.predictionF)
+#		print('XXXXXXXX')
 #		lossF = tf.reduce_mean(
 #			-tf.reduce_sum(self.labels * tf.log(tf.clip_by_value(self.predictionF, 1e-50, 1.0)), reduction_indices=[1]))
-		lossF = tf.reduce_mean(
+		activateF = 0
+		activateR = 0
+		activateF = tf.cond(trstepF < self.epochFR, lambda: 0.0, lambda: 1.0)
+		activateR = activateF
+		lossF = activateF*tf.reduce_mean(
 			tf.nn.softmax_cross_entropy_with_logits(labels=self.labels, logits=self.predictionF))
-		lossR = tf.reduce_mean(
+		lossR = activateR*tf.reduce_mean(
 			tf.nn.softmax_cross_entropy_with_logits(labels=self.x, logits=self.xR))
 		cross_entropy = cross_entropy + lambdaF*lossF + lambdaR*lossR
+##########################################
 ##########################################
 		tf.summary.scalar('cross_entropy', cross_entropy)
 		return cross_entropy

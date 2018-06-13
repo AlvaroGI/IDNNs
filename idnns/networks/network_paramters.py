@@ -31,7 +31,7 @@ def get_default_parser(num_of_samples=None):
 	                    type=int, help='The number of times to run the network')
 
 	parser.add_argument('-num_epochs',
-	                    '-e', dest="num_ephocs", default=100, #8000,
+	                    '-e', dest="num_ephocs", default=8000,
 	                    type=int, help='max number of epochs')
 
 	parser.add_argument('-net',
@@ -107,6 +107,18 @@ def get_default_parser(num_of_samples=None):
 	                    help='The directory for finding the data')
 
 	# Supervision parameters
+#                    parser.add_argument('-version',
+#                                        '-version', dest="version", default='test',
+#                                        type=string,
+#                                        help='Version name')
+#                    parser.add_argument('-trstepF',
+#                                        '-trstepF', dest="trstepF", default=100,
+#                                        type=int,
+#                                        help='Transition step (forward supervision)')
+#                    parser.add_argument('-trstepR',
+#                                        '-trstepR', dest="trstepR", default=100,
+#                                        type=int,
+#                                        help='Transition step (reverse supervision)')
 	parser.add_argument('-lambdaF',
 	                    '-lambdaF', dest="lambdaF", default=0.0,
 	                    type=float,
