@@ -1,0 +1,1 @@
+trstepF lambdaF nF trstepR lambdaR nR maxI(T;Y) correspondingI(X;T) [for each layer]
