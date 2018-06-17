@@ -85,7 +85,7 @@ def get_default_parser(num_of_samples=None):
 
 	parser.add_argument('-activation_function',
 	                    '-af', dest="activation_function", default=0, type=int,
-	                    help='The activation function of the model 0 for thnh 1 for RelU')
+	                    help='The activation function of the model 0 for tanh, 1 for RelU, 2 for no activation function')
 
 	parser.add_argument('-iad', dest="interval_accuracy_display", default=499, type=int,
 	                    help='The interval for display accuracy')

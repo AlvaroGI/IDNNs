@@ -18,7 +18,8 @@ import idnns.plots.utils as utils
 import Tkinter as tk
 from numpy import linalg as LA
 from idnns.networks import network_paramters as netp
-
+trstepF = 100
+trstepR = 100
 
 import tkFileDialog as filedialog
 
@@ -392,10 +393,11 @@ def write_maxMI_from_fig(str_names, mode, save_name):
     args = netp.get_default_parser(None)
     [font_size, axis_font, bar_font, colorbar_axis, sizes, yticks, xticks,title_strs, f, axes] = load_figures(mode, str_names)
     #Go over all the files
-    file_name = "Max_MI_%s.txt" % (args.version)
+    print("***VERSION AS ARGPARSE NOT IMPLEMENTED***")
+    file_name = "Max_MI_%s.txt" % ("VERSION_NOT_IMPLEMENTED") #(args.version)
     file = open(file_name,"a")
-    file.write("trstepF lambdaF nF trstepR lambdaR nR maxI(T;Y) correspondingI(X;T) [for each layer]")
-    file.write("\n%d %s %d %d %s %d" %(args.trstepF,args.lambdaF,args.nF,args.trstepR,args.lambdaR,args.nR))
+#    file.write("trstepF lambdaF nF trstepR lambdaR nR maxI(T;Y) correspondingI(X;T) [for each layer]")
+    file.write("\n%d %s %d %d %s %d" %(trstepF,args.lambdaF,args.nF,trstepR,args.lambdaR,args.nR))
     for i in range(len(str_names)):
         for j in range(len(str_names[i])):
             name_s = str_names[i][j]
