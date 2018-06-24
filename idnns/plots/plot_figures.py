@@ -397,7 +397,7 @@ def write_maxMI_from_fig(str_names, mode, save_name):
     file_name = "Max_MI_%s.txt" % ("VERSION_NOT_IMPLEMENTED") #(args.version)
     file = open(file_name,"a")
 #    file.write("trstepF lambdaF nF trstepR lambdaR nR maxI(T;Y) correspondingI(X;T) [for each layer]")
-    file.write("\n%d %s %d %d %s %d" %(trstepF,args.lambdaF,args.nF,trstepR,args.lambdaR,args.nR))
+    file.write("\n%d %s %d %d %s %d " %(trstepF,args.lambdaF,args.nF,trstepR,args.lambdaR,args.nR))
     for i in range(len(str_names)):
         for j in range(len(str_names[i])):
             name_s = str_names[i][j]
