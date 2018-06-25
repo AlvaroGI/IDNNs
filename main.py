@@ -19,6 +19,9 @@ def main():
     #Write maximum I(T;Y) in a text file
     print ('Saving maximum I(T;Y)')
     net.write_maxMI()
+    #Write I(X;T) and I(T;Y) in a .out text file
+    print ('Saving maximum I(T;Y)')
+    net.save_MI_plot_data()
 ######################################################################
 ######################################################################
 

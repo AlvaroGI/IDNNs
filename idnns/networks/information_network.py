@@ -172,5 +172,10 @@ class informationNetwork():
 		mode = 2
 		save_name = 'figure'
 		plt_fig.write_maxMI_from_fig(str_names, mode, save_name)
+	def save_MI_plot_data(self):
+		str_names = [[self.dir_saved]]
+		mode = 2
+		save_name = 'figure'
+		plt_fig.save_plot_data(str_names, mode, save_name)
 ######################################################################
 ######################################################################

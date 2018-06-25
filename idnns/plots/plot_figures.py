@@ -414,6 +414,27 @@ def write_maxMI_from_fig(str_names, mode, save_name):
             print("Maximum I(T;Y) saved in %s" % file_name)
     file = open(file_name,"a")
     file.close
+
+def save_plot_data(str_names, mode, save_name):
+    """Plot the data in the given names with the given mode"""
+    args = netp.get_default_parser(None)
+    [font_size, axis_font, bar_font, colorbar_axis, sizes, yticks, xticks,title_strs, f, axes] = load_figures(mode, str_names)
+    #Go over all the files
+    print("***VERSION AS ARGPARSE NOT IMPLEMENTED***")
+
+    for i in range(len(str_names)):
+        for j in range(len(str_names[i])):
+            name_s = str_names[i][j]
+            #Load data for the given file
+            data_array = utils.get_data(name_s)
+            data  = np.squeeze(np.array(data_array['information']))
+            I_XT_array = np.array(extract_array(data, 'local_IXT'))
+            I_TY_array = np.array(extract_array(data, 'local_ITY'))
+            maxI_TY = np.amax(I_TY_array,0)
+            correspI_XT = np.argmax(I_TY_array,0)
+            np.savetxt('I_XT.out', I_XT_array, delimiter=' ')
+            np.savetxt('I_YT.out', I_TY_array, delimiter=' ')
+
 ######################################################################
 ######################################################################
 
