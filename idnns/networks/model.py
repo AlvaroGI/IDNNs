@@ -11,8 +11,8 @@ from idnns.networks import network_paramters as netp
 args = netp.get_default_parser(None)
 #trstepF = args.trstepF
 #trstepR = args.trstepR
-trstepF = 100
-trstepR = 100
+trstepF = 1000
+trstepR = 1000
 lambdaF = args.lambdaF
 lambdaR = args.lambdaR
 
@@ -175,7 +175,7 @@ class Model:
 		activateF = 0
 		activateR = 0
 		activateF = tf.cond(trstepF < self.epochFR, lambda: 0.0, lambda: 1.0)
-		activateR = activateF
+		activateR = tf.cond(trstepR < self.epochFR, lambda: 0.0, lambda: 1.0)
 		lossF = activateF*tf.reduce_mean(
 			tf.nn.softmax_cross_entropy_with_logits(labels=self.labels, logits=self.predictionF))
 		lossR = activateR*tf.reduce_mean(
