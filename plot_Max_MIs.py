@@ -6,7 +6,7 @@ import argparse
 
 plotX = 'lambdaR'
 
-my_file = Path("Max_MI_VERSION_NOT_IMPLEMENTED.txt")
+my_file = Path("Max_MI_VERSION_NOT_IMPLEMENTED_relu_trstep100.txt")
 print(my_file)
 # Check file existence
 if my_file.is_file():
