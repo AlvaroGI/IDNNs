@@ -6,6 +6,7 @@ import tensorflow as tf
 from idnns.networks import model as mo
 import contextlib
 import idnns.information.entropy_estimators as ee
+from numpy import matlib as npm
 
 @contextlib.contextmanager
 def printoptions(*args, **kwargs):
@@ -200,29 +201,49 @@ def calc_information_kybic(data, x, label): #Kozachenko and Leonenko estimator
     Ht = 0
     Hxt = 0
     Hty = 0
+    print('xxx')
     for ii in range(0,num_samples):
-        NNdist_x = [np.linalg.norm(xx-x[ii]) for xx in x]
-        rho_x = min(NNdist_x)
-        NNdist_y = [np.linalg.norm(yy-y[ii]) for yy in y]
-        rho_y = min(NNdist_y)
+#        NNdist_x = [np.linalg.norm(xx-x[ii]) for xx in x]
+#        NNdist_x[ii] = max(NNdist_x)
+#        rho_x = min(NNdist_x)
+#        NNdist_y = [np.linalg.norm(yy-y[ii]) for yy in y]
+#        NNdist_y[ii] = max(NNdist_y)
+#        rho_y = min(NNdist_y)
         NNdist_t = [np.linalg.norm(tt-t[ii]) for tt in t]
+        NNdist_t[ii] = max(NNdist_t)
         rho_t = min(NNdist_t)
         NNdist_xt = [np.linalg.norm(xxt-xt[ii]) for xxt in xt]
+        NNdist_xt[ii] = max(NNdist_xt)
         rho_xt = min(NNdist_xt)
         NNdist_ty = [np.linalg.norm(tty-ty[ii]) for tty in ty]
+        NNdist_ty[ii] = max(NNdist_ty)
         rho_ty = min(NNdist_ty)
-        Hx = Hx + d_x*np.log2(rho_x)/num_samples
-        Hy = Hy + d_y*np.log2(rho_y)/num_samples
+
+#        print(ii)
+#        print(rho_x)
+#        print(rho_y)
+#        print(rho_t)
+#        print(rho_xt)
+#        print(rho_ty)
+
+#        Hx = Hx + d_x*np.log2(rho_x)/num_samples
+#        Hy = Hy + d_y*np.log2(rho_y)/num_samples
         Ht = Ht + d_t*np.log2(rho_t)/num_samples
         Hxt = Hxt + d_xt*np.log2(rho_xt)/num_samples
         Hty = Hty + d_ty*np.log2(rho_ty)/num_samples
-
-    Hx = Hx + np.log2( (num_samples-1) * (np.power(np.pi,d_x/2)) / (spe.gamma(1+d_x/2)) ) + 0.577
-    Hy = Hy + np.log2( (num_samples-1) * (np.power(np.pi,d_y/2)) / (spe.gamma(1+d_y/2)) ) + 0.577
+####
+xx =
+####
+#    Hx = Hx + np.log2( (num_samples-1) * (np.power(np.pi,d_x/2)) / (spe.gamma(1+d_x/2)) ) + 0.577
+#    Hy = Hy + np.log2( (num_samples-1) * (np.power(np.pi,d_y/2)) / (spe.gamma(1+d_y/2)) ) + 0.577
     Ht = Ht + np.log2( (num_samples-1) * (np.power(np.pi,d_t/2)) / (spe.gamma(1+d_t/2)) ) + 0.577
     Hxt = Hxt + np.log2( (num_samples-1) * (np.power(np.pi,d_xt/2)) / (spe.gamma(1+d_xt/2)) ) + 0.577
     Hty = Hty + np.log2( (num_samples-1) * (np.power(np.pi,d_ty/2)) / (spe.gamma(1+d_ty/2)) ) + 0.577
 
-    local_IXT = Hx+Ht-Hxt
-    local_ITY = Ht+Hy-Hty
+#    local_IXT = Hx+Ht-Hxt
+#    local_ITY = Ht+Hy-Hty
+    local_IXT = Ht-Hxt
+    local_ITY = Ht-Hty
+    print(local_ITY)
+    print(local_IXT)
     return local_IXT, local_ITY

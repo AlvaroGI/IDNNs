@@ -63,9 +63,12 @@ def calc_information_for_layer_with_other(data, bins, unique_inverse_x, unique_i
 	NO_tegmark_entropy = False
 
 	if NO_tegmark_entropy:
+		print('calc_information_for_layer_with_other')
 		local_IXT, local_ITY = calc_information_sampling(data, bins, pys1, pxs, label, b, b1,
 	                                                 len_unique_a, p_YgX, unique_inverse_x,
 	                                                 unique_inverse_y)
+		print(local_IXT)
+
 #####################################################################################
 #####################################################################################
 #####################################################################################
@@ -73,6 +76,7 @@ def calc_information_for_layer_with_other(data, bins, unique_inverse_x, unique_i
 		# data = activations of every layer
 		# x = original inputs
 		# label = original labels
+		print('calc_information_for_layer_with_other')
 		local_IXT, local_ITY = calc_information_kybic(data, x, label)
 	#print('___YYYYYYYYYYYYY__')
 	#print(data.shape)
