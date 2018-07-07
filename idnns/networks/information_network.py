@@ -47,6 +47,8 @@ class informationNetwork():
 		max_size = np.max([len(layers_size) for layers_size in self.layers_sizes])
 		# load data
 		self.data_sets = load_data(self.name, args.random_labels)
+		# The datasets are in: self.data_sets.data and data_sets.labels
+		
 		# create arrays for saving the data
 		self.ws, self.grads, self.information, self.models, self.names, self.networks, self.weights = [
 			[[[[None] for k in range(len(self.train_samples))] for j in range(len(self.layers_sizes))]

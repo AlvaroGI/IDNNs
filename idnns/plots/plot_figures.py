@@ -18,8 +18,12 @@ import idnns.plots.utils as utils
 import Tkinter as tk
 from numpy import linalg as LA
 from idnns.networks import network_paramters as netp
-trstepF = 100
-trstepR = 100
+args = netp.get_default_parser(None)
+#trstepF = 100
+#trstepR = 100
+trstepF = args.trstepF
+trstepR = args.trstepR
+version = args.version
 
 import tkFileDialog as filedialog
 
@@ -393,8 +397,7 @@ def write_maxMI_from_fig(str_names, mode, save_name):
     args = netp.get_default_parser(None)
     [font_size, axis_font, bar_font, colorbar_axis, sizes, yticks, xticks,title_strs, f, axes] = load_figures(mode, str_names)
     #Go over all the files
-    print("***VERSION AS ARGPARSE NOT IMPLEMENTED***")
-    file_name = "Max_MI_%s.txt" % ("VERSION_NOT_IMPLEMENTED") #(args.version)
+    file_name = "Max_MI_%s.txt" %  (version) #("VERSION_NOT_IMPLEMENTED")
     file = open(file_name,"a")
 #    file.write("trstepF lambdaF nF trstepR lambdaR nR maxI(T;Y) correspondingI(X;T) [for each layer]")
     file.write("\n%d %s %d %d %s %d " %(trstepF,args.lambdaF,args.nF,trstepR,args.lambdaR,args.nR))
@@ -420,8 +423,6 @@ def save_plot_data(str_names, mode, save_name):
     args = netp.get_default_parser(None)
     [font_size, axis_font, bar_font, colorbar_axis, sizes, yticks, xticks,title_strs, f, axes] = load_figures(mode, str_names)
     #Go over all the files
-    print("***VERSION AS ARGPARSE NOT IMPLEMENTED***")
-
     for i in range(len(str_names)):
         for j in range(len(str_names[i])):
             name_s = str_names[i][j]
@@ -432,8 +433,10 @@ def save_plot_data(str_names, mode, save_name):
             I_TY_array = np.array(extract_array(data, 'local_ITY'))
             maxI_TY = np.amax(I_TY_array,0)
             correspI_XT = np.argmax(I_TY_array,0)
-            np.savetxt('I_XT.out', I_XT_array, delimiter=' ')
-            np.savetxt('I_YT.out', I_TY_array, delimiter=' ')
+            text_x = 'I_XT_%s.out' % version
+            text_y = 'I_YT_%s.out' % version
+            np.savetxt(text_x, I_XT_array, delimiter=' ')
+            np.savetxt(text_y, I_TY_array, delimiter=' ')
 
 ######################################################################
 ######################################################################

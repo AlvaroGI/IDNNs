@@ -9,10 +9,10 @@ from idnns.networks.models import RecNet
 from idnns.networks.ops import *
 from idnns.networks import network_paramters as netp
 args = netp.get_default_parser(None)
-#trstepF = args.trstepF
-#trstepR = args.trstepR
-trstepF = 1000
-trstepR = 1000
+trstepF = args.trstepF
+trstepR = args.trstepR
+#trstepF = 1000
+#trstepR = 1000
 lambdaF = args.lambdaF
 lambdaR = args.lambdaR
 

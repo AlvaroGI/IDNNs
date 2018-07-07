@@ -13,7 +13,7 @@ def main():
     net.save_data()
     print ('Ploting figures')
     #Plot the newtork
-#    net.plot_network()
+    net.plot_network()
 ######################################################################
 ######################################################################
     #Write maximum I(T;Y) in a text file

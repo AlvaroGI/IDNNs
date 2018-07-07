@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 from joblib import Parallel, delayed
 NUM_CORES = multiprocessing.cpu_count()
 from idnns.information.mutual_information_calculation import *
-
+from idnns.information.mutual_info_estimation import calc_information_kybic
 
 def calc_information_for_layer(data, bins, unique_inverse_x, unique_inverse_y, pxs, pys1):
 	bins = bins.astype(np.float32)
@@ -56,12 +56,35 @@ def calc_information_sampling(data, bins, pys1, pxs, label, b, b1, len_unique_a,
 	return local_IXT, local_ITY
 
 
-def calc_information_for_layer_with_other(data, bins, unique_inverse_x, unique_inverse_y, label,
+def calc_information_for_layer_with_other(data, bins, unique_inverse_x, unique_inverse_y, x, label,
                                           b, b1, len_unique_a, pxs, p_YgX, pys1,
                                           percent_of_sampling=50):
-	local_IXT, local_ITY = calc_information_sampling(data, bins, pys1, pxs, label, b, b1,
+
+	NO_tegmark_entropy = True
+
+	if NO_tegmark_entropy:
+		local_IXT, local_ITY = calc_information_sampling(data, bins, pys1, pxs, label, b, b1,
 	                                                 len_unique_a, p_YgX, unique_inverse_x,
 	                                                 unique_inverse_y)
+#####################################################################################
+#####################################################################################
+#####################################################################################
+	else:
+		# data = activations of every layer
+		# x = original inputs
+		# label = original labels
+		local_IXT, local_ITY = calc_information_kybic(data, x, label)
+	#print('___YYYYYYYYYYYYY__')
+	#print(data.shape)
+	#print(x.shape)
+	#print(label.shape)
+	#print('___XXXXXXXXXXXXXX__')
+	#print(local_IXT)
+	#print(local_ITY)
+#####################################################################################
+#####################################################################################
+#####################################################################################
+
 	number_of_indexs = int(data.shape[1] * (1. / 100 * percent_of_sampling))
 	indexs_of_sampls = np.random.choice(data.shape[1], number_of_indexs, replace=False)
 	if percent_of_sampling != 100:
@@ -103,7 +126,7 @@ def calc_by_sampling_neurons(ws_iter_index, num_of_samples, label, sigma, bins, 
 
 
 def calc_information_for_epoch(iter_index, interval_information_display, ws_iter_index, bins, unique_inverse_x,
-                               unique_inverse_y, label, b, b1,
+                               unique_inverse_y, x, label, b, b1,
                                len_unique_a, pys, pxs, py_x, pys1, model_path, input_size, layerSize,
                                calc_vartional_information=False, calc_information_by_sampling=False,
                                calc_full_and_vartional=False, calc_regular_information=True, num_of_samples=100,
@@ -119,7 +142,7 @@ def calc_information_for_epoch(iter_index, interval_information_display, ws_iter
 		# Full plug-in infomration
 		params_original = np.array(
 			[calc_information_for_layer_with_other(data=ws_iter_index[i], bins=bins, unique_inverse_x=unique_inverse_x,
-			                                       unique_inverse_y=unique_inverse_y, label=label,
+			                                       unique_inverse_y=unique_inverse_y, x=x, label=label,
 			                                       b=b, b1=b1, len_unique_a=len_unique_a, pxs=pxs,
 			                                       p_YgX=py_x, pys1=pys1)
 			 for i in range(len(ws_iter_index))])
@@ -144,7 +167,7 @@ def calc_information_for_epoch(iter_index, interval_information_display, ws_iter
 	elif calc_regular_information:
 		params = np.array(
 			[calc_information_for_layer_with_other(data=ws_iter_index[i], bins=bins, unique_inverse_x=unique_inverse_x,
-			                                       unique_inverse_y=unique_inverse_y, label=label,
+			                                       unique_inverse_y=unique_inverse_y, x=x, label=label,
 			                                       b=b, b1=b1, len_unique_a=len_unique_a, pxs=pxs,
 			                                       p_YgX=py_x, pys1=pys1)
 			 for i in range(len(ws_iter_index))])
@@ -187,14 +210,14 @@ def get_information(ws, x, label, num_of_bins, interval_information_display, mod
 		params = np.array(Parallel(n_jobs=NUM_CORES
 		                           )(delayed(calc_information_for_epoch)
 		                             (i, interval_information_display, ws[i], bins, unique_inverse_x, unique_inverse_y,
-		                              label,
+		                              x, label,
 		                              b, b1, len(unique_a), pys,
 		                              pxs, p_y_given_x, pys1, model.save_file, x.shape[1], layerSize)
 		                             for i in range(len(ws))))
 	else:
 		params = np.array([calc_information_for_epoch
 		                   (i, interval_information_display, ws[i], bins, unique_inverse_x, unique_inverse_y,
-		                    label, b, b1, len(unique_a), pys,
+		                    x, label, b, b1, len(unique_a), pys,
 		                    pxs, p_y_given_x, pys1, model.save_file, x.shape[1], layerSize)
 		                   for i in range(len(ws))])
 	return params

@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.optimize import minimize
+import scipy.special as spe
 import sys
 import tensorflow as tf
 from idnns.networks import model as mo
@@ -176,3 +177,52 @@ def estimate_Information(Xs, Ys, Ts):
 	# estimate_IYT1 = ee.mi(Ys, Ts)
 	return estimate_IXT, estimate_IYT
 
+########################################################################
+########################################################################
+def calc_information_kybic(data, x, label): #Kozachenko and Leonenko estimator
+    # data.shape = (4096,layer_size)
+    # x.shape = (4096,12)
+    # label.shape = (4096,2)
+    num_samples = x.shape[0]
+    d_x = x.shape[1]
+    d_y = label.shape[1]
+    d_t = data.shape[1]
+    d_xt = d_x + d_t
+    d_ty = d_t + d_y
+
+    y = label
+    t = data
+
+    xt = np.append(x,t,axis=1)
+    ty = np.append(t,y,axis=1)
+    Hx = 0
+    Hy = 0
+    Ht = 0
+    Hxt = 0
+    Hty = 0
+    for ii in range(0,num_samples):
+        NNdist_x = [np.linalg.norm(xx-x[ii]) for xx in x]
+        rho_x = min(NNdist_x)
+        NNdist_y = [np.linalg.norm(yy-y[ii]) for yy in y]
+        rho_y = min(NNdist_y)
+        NNdist_t = [np.linalg.norm(tt-t[ii]) for tt in t]
+        rho_t = min(NNdist_t)
+        NNdist_xt = [np.linalg.norm(xxt-xt[ii]) for xxt in xt]
+        rho_xt = min(NNdist_xt)
+        NNdist_ty = [np.linalg.norm(tty-ty[ii]) for tty in ty]
+        rho_ty = min(NNdist_ty)
+        Hx = Hx + d_x*np.log2(rho_x)/num_samples
+        Hy = Hy + d_y*np.log2(rho_y)/num_samples
+        Ht = Ht + d_t*np.log2(rho_t)/num_samples
+        Hxt = Hxt + d_xt*np.log2(rho_xt)/num_samples
+        Hty = Hty + d_ty*np.log2(rho_ty)/num_samples
+
+    Hx = Hx + np.log2( (num_samples-1) * (np.power(np.pi,d_x/2)) / (spe.gamma(1+d_x/2)) ) + 0.577
+    Hy = Hy + np.log2( (num_samples-1) * (np.power(np.pi,d_y/2)) / (spe.gamma(1+d_y/2)) ) + 0.577
+    Ht = Ht + np.log2( (num_samples-1) * (np.power(np.pi,d_t/2)) / (spe.gamma(1+d_t/2)) ) + 0.577
+    Hxt = Hxt + np.log2( (num_samples-1) * (np.power(np.pi,d_xt/2)) / (spe.gamma(1+d_xt/2)) ) + 0.577
+    Hty = Hty + np.log2( (num_samples-1) * (np.power(np.pi,d_yt/2)) / (spe.gamma(1+d_ty/2)) ) + 0.577
+
+    local_IXT = Hx+Ht-Hxt
+    local_ITY = Ht+Hy-Hty
+    return local_IXT, local_ITY
