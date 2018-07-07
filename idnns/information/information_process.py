@@ -76,7 +76,7 @@ def calc_information_for_layer_with_other(data, bins, unique_inverse_x, unique_i
 		# data = activations of every layer
 		# x = original inputs
 		# label = original labels
-		print('calc_information_for_layer_with_other')
+	#	print('calc_information_for_layer_with_other')
 		local_IXT, local_ITY = calc_information_kybic(data, x, label)
 	#print('___YYYYYYYYYYYYY__')
 	#print(data.shape)
