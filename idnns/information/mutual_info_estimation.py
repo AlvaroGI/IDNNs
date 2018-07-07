@@ -221,7 +221,7 @@ def calc_information_kybic(data, x, label): #Kozachenko and Leonenko estimator
     Hy = Hy + np.log2( (num_samples-1) * (np.power(np.pi,d_y/2)) / (spe.gamma(1+d_y/2)) ) + 0.577
     Ht = Ht + np.log2( (num_samples-1) * (np.power(np.pi,d_t/2)) / (spe.gamma(1+d_t/2)) ) + 0.577
     Hxt = Hxt + np.log2( (num_samples-1) * (np.power(np.pi,d_xt/2)) / (spe.gamma(1+d_xt/2)) ) + 0.577
-    Hty = Hty + np.log2( (num_samples-1) * (np.power(np.pi,d_yt/2)) / (spe.gamma(1+d_ty/2)) ) + 0.577
+    Hty = Hty + np.log2( (num_samples-1) * (np.power(np.pi,d_ty/2)) / (spe.gamma(1+d_ty/2)) ) + 0.577
 
     local_IXT = Hx+Ht-Hxt
     local_ITY = Ht+Hy-Hty

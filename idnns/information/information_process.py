@@ -60,7 +60,7 @@ def calc_information_for_layer_with_other(data, bins, unique_inverse_x, unique_i
                                           b, b1, len_unique_a, pxs, p_YgX, pys1,
                                           percent_of_sampling=50):
 
-	NO_tegmark_entropy = True
+	NO_tegmark_entropy = False
 
 	if NO_tegmark_entropy:
 		local_IXT, local_ITY = calc_information_sampling(data, bins, pys1, pxs, label, b, b1,
