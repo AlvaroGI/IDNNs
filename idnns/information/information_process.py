@@ -67,7 +67,7 @@ def calc_information_for_layer_with_other(data, bins, unique_inverse_x, unique_i
 		local_IXT, local_ITY = calc_information_sampling(data, bins, pys1, pxs, label, b, b1,
 	                                                 len_unique_a, p_YgX, unique_inverse_x,
 	                                                 unique_inverse_y)
-		print(local_IXT)
+#		print(local_IXT)
 
 #####################################################################################
 #####################################################################################

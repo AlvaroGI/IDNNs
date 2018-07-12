@@ -8,6 +8,7 @@ from idnns.networks import model as mo
 import contextlib
 import idnns.information.entropy_estimators as ee
 from numpy import matlib as npm
+import time
 sys.setrecursionlimit(10000)
 
 @contextlib.contextmanager
@@ -213,53 +214,56 @@ def calc_information_kybic(data, x, label): #Kozachenko and Leonenko estimator
 #    tree_ty = spa.KDTree(ty)
 
     for ii in range(0,num_samples):
-        tree_x = spa.KDTree(np.append(x[:ii],x[ii+1:],axis=0))
-        tree_y = spa.KDTree(np.append(y[:ii],y[ii+1:],axis=0))
-        tree_t = spa.KDTree(np.append(t[:ii],t[ii+1:],axis=0))
-        tree_xt = spa.KDTree(np.append(xt[:ii],xt[ii+1:],axis=0))
-        tree_ty = spa.KDTree(np.append(ty[:ii],ty[ii+1:],axis=0))
-        rho_x = tree_x.query(x[ii])
-        rho_y = tree_y.query(y[ii])
-        rho_t = tree_t.query(t[ii])
-        rho_xt = tree_xt.query(xt[ii])
-        rho_ty = tree_ty.query(ty[ii])
-        rho_x = rho_x[0]
-        rho_y = rho_y[0]
-        rho_t = rho_t[0]
-        rho_xt = rho_xt[0]
-        rho_ty = rho_ty[0]
+        tic = time.time()
+#        tree_x = spa.KDTree(np.append(x[:ii],x[ii+1:],axis=0))
+#        tree_y = spa.KDTree(np.append(y[:ii],y[ii+1:],axis=0))
+#        tree_t = spa.KDTree(np.append(t[:ii],t[ii+1:],axis=0))
+#        tree_xt = spa.KDTree(np.append(xt[:ii],xt[ii+1:],axis=0))
+#        tree_ty = spa.KDTree(np.append(ty[:ii],ty[ii+1:],axis=0))
+#        rho_x = tree_x.query(x[ii])
+#        rho_y = tree_y.query(y[ii])
+#        rho_t = tree_t.query(t[ii])
+#        rho_xt = tree_xt.query(xt[ii])
+#        rho_ty = tree_ty.query(ty[ii])
+#        rho_x = rho_x[0]
+#        rho_y = rho_y[0]
+#        rho_t = rho_t[0]
+#        rho_xt = rho_xt[0]
+#        rho_ty = rho_ty[0]
 
-        # NNdist_x = [np.linalg.norm(xx-x[ii]) for xx in x]
-        # NNdist_x[ii] = max(NNdist_x)
-        # rho_x = min(NNdist_x)
-        # NNdist_y = [np.linalg.norm(yy-y[ii]) for yy in y]
-        # NNdist_y[ii] = max(NNdist_y)
-        # rho_y = min(NNdist_y)
-        # NNdist_t = [np.linalg.norm(tt-t[ii]) for tt in t]
-        # NNdist_t[ii] = max(NNdist_t)
-        # rho_t = min(NNdist_t)
-        # NNdist_xt = [np.linalg.norm(xxt-xt[ii]) for xxt in xt]
-        # NNdist_xt[ii] = max(NNdist_xt)
-        # rho_xt = min(NNdist_xt)
-        # NNdist_ty = [np.linalg.norm(tty-ty[ii]) for tty in ty]
-        # NNdist_ty[ii] = max(NNdist_ty)
-        # rho_ty = min(NNdist_ty)
+        NNdist_x = [np.linalg.norm(xx-x[ii]) for xx in x]
+        NNdist_x[ii] = max(NNdist_x)
+        rho_x = min(NNdist_x)
+        NNdist_y = [np.linalg.norm(yy-y[ii]) for yy in y]
+        NNdist_y[ii] = max(NNdist_y)
+        rho_y = min(NNdist_y)
+        NNdist_t = [np.linalg.norm(tt-t[ii]) for tt in t]
+        NNdist_t[ii] = max(NNdist_t)
+        rho_t = min(NNdist_t)
+        NNdist_xt = [np.linalg.norm(xxt-xt[ii]) for xxt in xt]
+        NNdist_xt[ii] = max(NNdist_xt)
+        rho_xt = min(NNdist_xt)
+        NNdist_ty = [np.linalg.norm(tty-ty[ii]) for tty in ty]
+        NNdist_ty[ii] = max(NNdist_ty)
+        rho_ty = min(NNdist_ty)
 
         Hx = Hx + d_x*np.log2(rho_x)/num_samples
         Hy = Hy + d_y*np.log2(rho_y)/num_samples
         Ht = Ht + d_t*np.log2(rho_t)/num_samples
         Hxt = Hxt + d_xt*np.log2(rho_xt)/num_samples
         Hty = Hty + d_ty*np.log2(rho_ty)/num_samples
-#        print('Hx')
-#        print(Hx)
-#        print('Hy')
-#        print(Hy)
-#        print('Ht')
-#        print(Ht)
-#        print('Hxt')
-#        print(Hxt)
-#        print('Hty')
-#        print(Hty)
+        print('Hx')
+        print(Hx)
+        print('Hy')
+        print(Hy)
+        print('Ht')
+        print(Ht)
+        print('Hxt')
+        print(Hxt)
+        print('Hty')
+        print(Hty)
+
+        print(time.time()-tic)
 
     Hx = Hx + np.log2( (num_samples-1) * (np.power(np.pi,d_x/2)) / (spe.gamma(1+d_x/2)) ) + 0.577
     Hy = Hy + np.log2( (num_samples-1) * (np.power(np.pi,d_y/2)) / (spe.gamma(1+d_y/2)) ) + 0.577
@@ -267,10 +271,10 @@ def calc_information_kybic(data, x, label): #Kozachenko and Leonenko estimator
     Hxt = Hxt + np.log2( (num_samples-1) * (np.power(np.pi,d_xt/2)) / (spe.gamma(1+d_xt/2)) ) + 0.577
     Hty = Hty + np.log2( (num_samples-1) * (np.power(np.pi,d_ty/2)) / (spe.gamma(1+d_ty/2)) ) + 0.577
 
-    local_IXT = Hx+Ht-Hxt
-    local_ITY = Ht+Hy-Hty
-#    local_IXT = Ht-Hxt
-#    local_ITY = Ht-Hty
+#    local_IXT = Hx+Ht-Hxt
+#    local_ITY = Ht+Hy-Hty
+    local_IXT = Ht-Hxt
+    local_ITY = Ht-Hty
 #    print(local_ITY)
 #    print(local_IXT)
     return local_IXT, local_ITY
