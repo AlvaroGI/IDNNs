@@ -419,7 +419,7 @@ def write_maxMI_from_fig(str_names, mode, save_name):
     file.close
 
 def save_plot_data(str_names, mode, save_name):
-    """Plot the data in the given names with the given mode"""
+    """Save the data in the given names with the given mode"""
     args = netp.get_default_parser(None)
     [font_size, axis_font, bar_font, colorbar_axis, sizes, yticks, xticks,title_strs, f, axes] = load_figures(mode, str_names)
     #Go over all the files

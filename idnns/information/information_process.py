@@ -169,6 +169,7 @@ def calc_information_for_epoch(iter_index, interval_information_display, ws_iter
 		                                  sigma=sigma, bins=bins, pxs=pxs)
 
 	elif calc_regular_information:
+		#print(ws_iter_index) ##################################################################################################################
 		params = np.array(
 			[calc_information_for_layer_with_other(data=ws_iter_index[i], bins=bins, unique_inverse_x=unique_inverse_x,
 			                                       unique_inverse_y=unique_inverse_y, x=x, label=label,
@@ -207,6 +208,7 @@ def get_information(ws, x, label, num_of_bins, interval_information_display, mod
                     calc_parallel=True, py_hats=0):
 	"""Calculate the information for the network for all the epochs and all the layers"""
 	print('Start calculating the information...')
+#	print(ws) ##################################################################################################################################
 	bins = np.linspace(-1, 1, num_of_bins)
 	label = np.array(label).astype(np.float)
 	pys, pys1, p_y_given_x, b1, b, unique_a, unique_inverse_x, unique_inverse_y, pxs = extract_probs(label, x)

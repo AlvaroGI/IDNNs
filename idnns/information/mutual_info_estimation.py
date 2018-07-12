@@ -196,6 +196,8 @@ def calc_information_kybic(data, x, label): #Kozachenko and Leonenko estimator
     y = label
     t = data
 
+    #print(t.shape) ################################################
+
     xt = np.append(x,t,axis=1)
     ty = np.append(t,y,axis=1)
     Hx = 0
@@ -203,21 +205,30 @@ def calc_information_kybic(data, x, label): #Kozachenko and Leonenko estimator
     Ht = 0
     Hxt = 0
     Hty = 0
- 
 
-    tree_x = spa.KDTree(x)
-    tree_y = spa.KDTree(y)
-    tree_t = spa.KDTree(t)
-    tree_xt = spa.KDTree(xt)
-    tree_ty = spa.KDTree(ty)
-
+#    tree_x = spa.KDTree(x)
+#    tree_y = spa.KDTree(y)
+#    tree_t = spa.KDTree(t)
+#    tree_xt = spa.KDTree(xt)
+#    tree_ty = spa.KDTree(ty)
 
     for ii in range(0,num_samples):
+        tree_x = spa.KDTree(np.append(x[:ii],x[ii+1:],axis=0))
+        tree_y = spa.KDTree(np.append(y[:ii],y[ii+1:],axis=0))
+        tree_t = spa.KDTree(np.append(t[:ii],t[ii+1:],axis=0))
+        tree_xt = spa.KDTree(np.append(xt[:ii],xt[ii+1:],axis=0))
+        tree_ty = spa.KDTree(np.append(ty[:ii],ty[ii+1:],axis=0))
         rho_x = tree_x.query(x[ii])
         rho_y = tree_y.query(y[ii])
         rho_t = tree_t.query(t[ii])
         rho_xt = tree_xt.query(xt[ii])
         rho_ty = tree_ty.query(ty[ii])
+        rho_x = rho_x[0]
+        rho_y = rho_y[0]
+        rho_t = rho_t[0]
+        rho_xt = rho_xt[0]
+        rho_ty = rho_ty[0]
+
         # NNdist_x = [np.linalg.norm(xx-x[ii]) for xx in x]
         # NNdist_x[ii] = max(NNdist_x)
         # rho_x = min(NNdist_x)
@@ -239,10 +250,17 @@ def calc_information_kybic(data, x, label): #Kozachenko and Leonenko estimator
         Ht = Ht + d_t*np.log2(rho_t)/num_samples
         Hxt = Hxt + d_xt*np.log2(rho_xt)/num_samples
         Hty = Hty + d_ty*np.log2(rho_ty)/num_samples
-####
-#xx = npm.repmat(x,1,4096)-npm.repmat(np.reshape(x,12*4096),4096,1)
-#rho_x = sum( np.log2( [np.amin(np.linalg.norm(xxi,axis=0)) for xxi in xx] ) )
-####
+#        print('Hx')
+#        print(Hx)
+#        print('Hy')
+#        print(Hy)
+#        print('Ht')
+#        print(Ht)
+#        print('Hxt')
+#        print(Hxt)
+#        print('Hty')
+#        print(Hty)
+
     Hx = Hx + np.log2( (num_samples-1) * (np.power(np.pi,d_x/2)) / (spe.gamma(1+d_x/2)) ) + 0.577
     Hy = Hy + np.log2( (num_samples-1) * (np.power(np.pi,d_y/2)) / (spe.gamma(1+d_y/2)) ) + 0.577
     Ht = Ht + np.log2( (num_samples-1) * (np.power(np.pi,d_t/2)) / (spe.gamma(1+d_t/2)) ) + 0.577
